@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-code-locate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A vite plugin that can be used to locate code locations by chrome extension.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

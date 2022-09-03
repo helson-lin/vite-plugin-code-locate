@@ -4,15 +4,7 @@ import child_process from 'child_process'
  * @param path file path dir
  */
 export function openCodeFile(path: string): void {
-    let filePath: string;
-    if (process.platform === 'win32') {
-        let pathBefore = __dirname.substring(0, __dirname.search('node_modules'))
-        filePath = pathBefore + path
-    } else {
-        filePath = path
-    }
-    console.log("code open:", filePath)
-    child_process.exec(`code -r -g ${filePath}`)
+    child_process.exec(`code -r -g ${path}`)
 }
 /**
  * @description handler template string to add code-location attrs
@@ -38,17 +30,23 @@ export function addLineAttr(lineStr: string, line: number, resourcePath: string)
     return lineStr
 }
 
+export function findTemplateStartLine(vueCode: string): number {
+    const lineIndex = vueCode.split("\n").findIndex(line => line.trim().startsWith('<template>'));
+    return lineIndex || 0;
+}
 /**
 * @description find vue file's template block and handler
 */
 export function codeLineTrack(str: string, resourcePath: string): string {
     const reg = /^<template>[\d\D]*<\/template>$/gm
+    // find template block line
+    const templateStartIndex = findTemplateStartLine(str);
     const templateStringArr = str.match(reg)
     if (!templateStringArr) return str;
     let lineList = templateStringArr[0].split('\n')
     let newList = <string[]>[]
     lineList.forEach((item, index) => {
-        newList.push(addLineAttr(item, index + 1, resourcePath))
+        newList.push(addLineAttr(item, templateStartIndex + index + 1, resourcePath))
     })
     // replace template width handledTeamplateString
     return str.replace(reg, newList.join('\n'))

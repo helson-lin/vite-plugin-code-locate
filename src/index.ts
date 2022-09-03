@@ -2,7 +2,12 @@
 import type { Plugin } from "vite"
 import { openCodeFile, codeLineTrack } from "./utils"
 
-module.exports = function codeLocate(): Plugin {
+interface Options {
+    log?: boolean;
+}
+
+module.exports = function codeLocate(options?: Partial<Options>): Plugin {
+    const { log } = options || { log: false }
     return {
         name: 'vite:code-locate',
         apply: 'serve',
@@ -13,7 +18,7 @@ module.exports = function codeLocate(): Plugin {
                 if (!url) return next();
                 if (url.indexOf("/code/open") !== -1) {
                     const filepath = url.replace('/code/open?path=', '')
-                    console.log("open by chrome debug:", filepath)
+                    if(log) console.log("open by chrome debug:", filepath);
                     if (filepath) openCodeFile(filepath);
                 }
                 next()
