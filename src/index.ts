@@ -18,8 +18,8 @@ module.exports = function codeLocate(options?: Partial<Options>): Plugin {
                 if (!url) return next();
                 if (url.indexOf("/code/open") !== -1) {
                     const filepath = url.replace('/code/open?path=', '')
-                    if(log) console.log("open by chrome debug:", filepath);
-                    if (filepath) openCodeFile(filepath);
+                    if(log) console.log("open by chrome debug:", decodeURIComponent(filepath));
+                    if (filepath) openCodeFile(decodeURIComponent(filepath));
                 }
                 next()
             })
